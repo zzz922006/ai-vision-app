@@ -1,7 +1,5 @@
 streamlit
-ultralytics>=8.3.0
+ultralytics
 opencv-python-headless
 pillow
-deepface==0.0.79
-tensorflow-cpu==2.12.0
-tf-keras
+requests
