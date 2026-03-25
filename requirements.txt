@@ -1,5 +1,5 @@
-streamlit==1.32.0
-ultralytics==8.0.20
+streamlit
+ultralytics>=8.3.0
 opencv-python-headless
 pillow
 deepface==0.0.79
