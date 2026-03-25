@@ -1,7 +1,7 @@
 streamlit
 ultralytics
-deepface
 opencv-python-headless
 pillow
-tensorflow
+deepface
 tf-keras
+tensorflow-cpu
