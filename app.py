@@ -5,39 +5,34 @@ from PIL import Image
 from deepface import DeepFace
 import os
 
-# ===== TẮT WARNING =====
+# ===== FIX WARNING + GIẢM LOG =====
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
-# ===== CẤU HÌNH TRANG =====
+# ===== CẤU HÌNH WEB =====
 st.set_page_config(
     page_title="AI Vision App",
     page_icon="🤖",
     layout="centered"
 )
 
-# ===== STYLE (UI đẹp) =====
+# ===== UI =====
 st.markdown("""
 <style>
-.main {
+body {
     background-color: #0f172a;
+    color: white;
 }
 h1 {
     text-align: center;
     color: #22c55e;
 }
-.stButton>button {
-    background-color: #22c55e;
-    color: white;
-    border-radius: 10px;
-    padding: 10px 20px;
-}
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown("<h1>🤖 AI Vision App</h1>", unsafe_allow_html=True)
-st.write("📷 Nhận diện khuôn mặt, tuổi và vật thể")
+st.write("📷 Nhận diện người, vật thể và tuổi")
 
-# ===== LOAD MODEL =====
+# ===== LOAD MODEL (TỐI ƯU) =====
 @st.cache_resource
 def load_model():
     return YOLO("yolov8n.pt")
@@ -72,7 +67,7 @@ if image:
 
     with st.spinner("🔍 Đang xử lý AI..."):
 
-        # ===== YOLO =====
+        # ===== YOLO (nhận diện vật thể) =====
         results = model(img)
 
         count = {}
@@ -88,11 +83,11 @@ if image:
                 if name == "person":
                     person_count += 1
 
-        # ===== DEEPFACE (tuổi) =====
+        # ===== DEEPFACE (CHỈ DÙNG AGE → TRÁNH CRASH) =====
         try:
             face = DeepFace.analyze(
                 img,
-                actions=['age'],
+                actions=['age'],  # ⚠️ giữ đơn giản để tránh lỗi RAM
                 enforce_detection=False
             )
             age = face[0]['age']
@@ -100,8 +95,8 @@ if image:
         except:
             st.warning("Không phát hiện khuôn mặt")
 
-    # ===== HIỂN THỊ KẾT QUẢ =====
-    st.markdown(f"### 👥 Số người phát hiện: **{person_count}**")
+    # ===== HIỂN THỊ =====
+    st.markdown(f"### 👥 Số người: **{person_count}**")
 
     st.markdown("### 📦 Vật thể phát hiện:")
     if count:
@@ -110,7 +105,6 @@ if image:
     else:
         st.write("Không phát hiện vật thể")
 
-    # ===== VẼ KẾT QUẢ =====
+    # ===== HIỂN THỊ ẢNH KẾT QUẢ =====
     img_show = results[0].plot()
-
     st.image(img_show, caption="Kết quả AI", use_container_width=True)
